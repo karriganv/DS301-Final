@@ -60,8 +60,13 @@ summary(model)
 
 model.train <- lm(Price~.-Shared.Room -Private.Room -Room.Type -Attraction.Index -Restraunt.Index, data = train)
 
+MSE_train = mean((train$Price - model.train$fitted.values)^2) 
+MSE_train
+
 predicted_values = predict(model.train,test)
-predicted_values
+
+MSE_test = mean((test$Price - predicted_values)^2)
+MSE_test
 
 install.packages("ltm")
 library(ltm)
