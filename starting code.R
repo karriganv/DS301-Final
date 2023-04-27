@@ -32,7 +32,7 @@ hist(df$Cleanliness.Rating)
 
 hist(df$City.Center..km.)
 
-ggplot(df, aes(x = City, fill = City)) + geom_histogram(stat = "count")
+ggplot(df, aes(x = City, fill = City)) + geom_histogram(stat = "count") + theme(axis.text.x=element_text(size=11, angle=30, vjust=.8, hjust=0.8)) 
 
 ggplot(df, aes(x = Price, color = City)) + geom_point(stat = "count")
 
