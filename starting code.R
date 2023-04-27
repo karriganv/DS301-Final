@@ -49,5 +49,5 @@ test   <- df[!sample, ]
 dim(train)
 dim(test)
 
-
+summary(model)
 
