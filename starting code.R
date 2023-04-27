@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 df <- read.csv("Aemf1.csv")
+=======
+df <- read.csv("https://raw.githubusercontent.com/karriganv/DS301-Final/main/Aemf1.csv")
+>>>>>>> ba1cfe50a020d895d5fe17d89543419c79b74d27
 head(df)
 library(tidyverse)
 library(ggplot2)
@@ -34,6 +38,8 @@ hist(df$City.Center..km.)
 
 ggplot(df, aes(x = City, fill = City)) + geom_histogram(stat = "count") + theme(axis.text.x=element_text(size=11, angle=30, vjust=.8, hjust=0.8)) 
 
+ggplot(df, aes(x = City, fill = City)) + geom_histogram(stat = "count")
+
 ggplot(df, aes(x = Price, color = City)) + geom_point(stat = "count")
 
 
@@ -49,5 +55,27 @@ test   <- df[!sample, ]
 dim(train)
 dim(test)
 
+
 summary(model)
 
+model.train <- lm(Price~.-Shared.Room -Private.Room -Room.Type -Attraction.Index -Restraunt.Index, data = train)
+
+predicted_values = predict(model.train,test)
+predicted_values
+
+install.packages("ltm")
+library(ltm)
+
+# correlation exploration
+cor(df$Bedrooms, df$Person.Capacity)
+biserial.cor(df$Bedrooms,df$Superhost)
+kruskal.test(df$Person.Capacity,df$Room.Type)
+
+
+library(tree)
+tree.df = tree(City~.-Shared.Room -Private.Room -Room.Type -Attraction.Index -Restraunt.Index,split=c("deviance"),data=train)
+
+summary(tree.df)
+
+plot(tree.df)
+text(tree.df,pretty=0)
