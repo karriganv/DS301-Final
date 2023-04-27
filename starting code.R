@@ -13,15 +13,28 @@ variable.names(df)
 
 sum(is.na(df))
 
-summary(df$Price)
-
 df$City <- as.factor(df$City)
 df$Day <- as.factor(df$Day)
 df$Room.Type <- as.factor(df$Room.Type)
+df$Superhost <- as.factor(df$Superhost)
+
+levels(df$Superhost)
+
+levels(df$Room.Type)
+
+summary(df$Price)
+
+summary(df$Guest.Satisfaction)
 
 summary(df$City)
 
+hist(df$Cleanliness.Rating)
+
+hist(df$City.Center..km.)
+
 ggplot(df, aes(x = City, fill = City)) + geom_histogram(stat = "count")
+
+ggplot(df, aes(x = Price, color = City)) + geom_point(stat = "count")
 
 
 ##
