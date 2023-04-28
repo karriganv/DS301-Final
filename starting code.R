@@ -69,7 +69,7 @@ MSE_test = mean((test$Price - predicted_values)^2)
 MSE_test
 
 library(leaps)
-regfit = regsubsets(Price~.-Shared.Room -Private.Room -Room.Type -Attraction.Index -Restraunt.Index,data=train,nbest=1,nvmax=20) ##nbest = how many best models of size n do you want to report
+regfit = regsubsets(Price~.-Shared.Room -Private.Room -Room.Type -Attraction.Index -Restraunt.Index,data=df,nbest=1,nvmax=20) ##nbest = how many best models of size n do you want to report
 ##nvmax = maximum number of predictors you want to consider
 
 regfit.sum = summary(regfit)
