@@ -54,6 +54,7 @@ dim(test)
 model.train <- lm(Price~.-Shared.Room -Private.Room -Room.Type -Attraction.Index -Restraunt.Index, data = train)
 
 predicted_values = predict(model.train,test)
+
 predicted_values
 
 install.packages("ltm")
@@ -72,4 +73,9 @@ summary(tree.df)
 
 plot(tree.df)
 text(tree.df,pretty=0)
->>>>>>> ba1cfe50a020d895d5fe17d89543419c79b74d27
+
+tree.pred = predict(tree.df, newdata=test)
+
+Y.test = df[-train,"City"]
+mean((tree.pred - Y.test)^2)
+
