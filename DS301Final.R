@@ -38,6 +38,16 @@ ggplot(df, aes(x = City, fill = City)) + geom_histogram(stat = "count")
 
 ggplot(df, aes(x = Price, color = City)) + geom_point(stat = "count")
 
+## Identification of Variable Importance
+
+library(caret)
+library(randomForest)
+library(varImp)
+
+regressor <- randomForest(Price~., data = df, importance=TRUE) 
+
+varImp(regressor) 
+varImp(regressor, conditional=TRUE)
 
 ##
 
