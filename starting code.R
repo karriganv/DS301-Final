@@ -68,6 +68,32 @@ predicted_values = predict(model.train,test)
 MSE_test = mean((test$Price - predicted_values)^2)
 MSE_test
 
+library(leaps)
+regfit = regsubsets(Price~.-Shared.Room -Private.Room -Room.Type -Attraction.Index -Restraunt.Index,data=train,nbest=1,nvmax=20) ##nbest = how many best models of size n do you want to report
+##nvmax = maximum number of predictors you want to consider
+
+regfit.sum = summary(regfit)
+regfit.sum
+
+n = dim(train)[1]
+p = rowSums(regfit.sum$which)
+adjr2 = regfit.sum$adjr2
+cp = regfit.sum$cp
+rss = regfit.sum$rss
+AIC = n*log(rss/n) + 2*(p)
+BIC = n*log(rss/n) + (p)*log(n)
+
+cbind(p,rss,adjr2,cp,AIC,BIC)
+plot(p,BIC)
+plot(p,AIC)
+
+which.min(BIC) 
+which.min(AIC)
+which.min(cp)
+which.max(adjr2)
+
+coef(regfit,16)
+
 install.packages("ltm")
 library(ltm)
 
