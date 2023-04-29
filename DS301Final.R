@@ -32,7 +32,7 @@ summary(df$City)
 
 hist(df$Cleanliness.Rating)
 
-hist(df$City.Center..km.)
+hist2  =  hist(df$City.Center..km., xlab = "Distance from city center (km)", col = 'lightblue', main = "City Center (km)")
 
 ggplot(df, aes(x = City, fill = City)) + geom_histogram(stat = "count")
 
