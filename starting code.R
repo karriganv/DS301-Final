@@ -43,9 +43,17 @@ ggplot(df, aes(x = City, fill = City)) + geom_histogram(stat = "count")
 ggplot(df, aes(x = Price, color = City)) + geom_point(stat = "count")
 
 
-##
+## QUESTION 1
 
-model <- lm(Price~., data = df)
+#Initial Variable Selection
+
+install.packages("ltm")
+library(ltm)
+cor(df$Bedrooms, df$Person.Capacity)
+biserial.cor(df$Bedrooms,df$Superhost)
+kruskal.test(df$Person.Capacity,df$Room.Type)
+
+#Best Subset Selection - AIC,BIC, etc.
 
 set.seed(1)
 
@@ -55,22 +63,8 @@ test   <- df[!sample, ]
 dim(train)
 dim(test)
 
-
-summary(model)
-
-model.train <- lm(Price~.-Shared.Room -Private.Room -Room.Type -Attraction.Index -Restraunt.Index, data = train)
-
-MSE_train = mean((train$Price - model.train$fitted.values)^2) 
-MSE_train
-
-predicted_values = predict(model.train,test)
-
-MSE_test = mean((test$Price - predicted_values)^2)
-MSE_test
-
 library(leaps)
-regfit = regsubsets(Price~.-Shared.Room -Private.Room -Room.Type -Attraction.Index -Restraunt.Index,data=df,nbest=1,nvmax=20) ##nbest = how many best models of size n do you want to report
-##nvmax = maximum number of predictors you want to consider
+regfit = regsubsets(Price~.-Shared.Room -Private.Room -Room.Type -Attraction.Index -Restraunt.Index,data=df,nbest=1,nvmax=20)
 
 regfit.sum = summary(regfit)
 regfit.sum
@@ -94,14 +88,33 @@ which.max(adjr2)
 
 coef(regfit,16)
 
-install.packages("ltm")
-library(ltm)
+#Best Subset Selection - Cross Validation
 
-# correlation exploration
-cor(df$Bedrooms, df$Person.Capacity)
-biserial.cor(df$Bedrooms,df$Superhost)
-kruskal.test(df$Person.Capacity,df$Room.Type)
+k = 10
+folds = sample(1:k,nrow(df),replace=TRUE)
 
+val.errors = matrix(NA,k,19)
+
+## loop over k folds (for j in 1:k)
+for(j in 1:k){
+  test1 = df[folds==j,]
+  train1 = df[folds!=j,]
+  
+  best.fit = regsubsets(Price~.-Shared.Room -Private.Room -Room.Type -Attraction.Index -Restraunt.Index,data=train1,nbest=1,nvmax=20) ##nbest = how many best models of size n do you want to report
+  
+  for(i in 1:20){
+    test.mat = model.matrix(Price~.-Shared.Room -Private.Room -Room.Type -Attraction.Index -Restraunt.Index,data=test1)
+    
+    coef.m = coef(best.fit,id=i)
+    
+    pred = test.mat[,names(coef.m)]%*%coef.m
+    val.errors[j,i] = mean((test1$Price-pred)^2)
+  }
+  
+}
+
+cv.errors = apply(val.errors,2,mean)
+which.min(cv.errors)
 
 library(tree)
 tree.df = tree(City~.-Shared.Room -Private.Room -Room.Type -Attraction.Index -Restraunt.Index,split=c("deviance"),data=train)
