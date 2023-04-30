@@ -19,7 +19,11 @@ sum(is.na(df))
 
 df$City <- as.factor(df$City)
 df$Day <- as.factor(df$Day)
+df$Shared.Room <- as.factor(df$Shared.Room)
+df$Private.Room <- as.factor(df$Private.Room)
 df$Room.Type <- as.factor(df$Room.Type)
+df$Multiple.Rooms <- as.factor(df$Multiple.Rooms)
+df$Business <- as.factor(df$Business)
 df$Superhost <- as.factor(df$Superhost)
 
 levels(df$Superhost)
@@ -47,11 +51,16 @@ ggplot(df, aes(x = Price, color = City)) + geom_point(stat = "count")
 
 #Initial Variable Selection
 
-install.packages("ltm")
-library(ltm)
-cor(df$Bedrooms, df$Person.Capacity)
-biserial.cor(df$Bedrooms,df$Superhost)
-kruskal.test(df$Person.Capacity,df$Room.Type)
+library(ISLR2)
+
+#check for multicollinearity
+cor(df[sapply(df, is.numeric)])
+
+#install.packages("car")
+library(car)
+fit1 = lm(Price~.-Attraction.Index -Restraunt.Index -Shared.Room -Private.Room -Normalised.Restraunt.Index,data=df)
+summary(fit1)
+vif(fit1)
 
 #Best Subset Selection - AIC,BIC, etc.
 
@@ -64,7 +73,7 @@ dim(train)
 dim(test)
 
 library(leaps)
-regfit = regsubsets(Price~.-Shared.Room -Private.Room -Room.Type -Attraction.Index -Restraunt.Index,data=df,nbest=1,nvmax=20)
+regfit = regsubsets(Price~.-Attraction.Index -Restraunt.Index -Shared.Room -Private.Room -Normalised.Restraunt.Index,data=df,nbest=1,nvmax=21)
 
 regfit.sum = summary(regfit)
 regfit.sum
@@ -86,24 +95,23 @@ which.min(AIC)
 which.min(cp)
 which.max(adjr2)
 
-coef(regfit,16)
+coef(regfit,19)
 
 #Best Subset Selection - Cross Validation
 
 k = 10
 folds = sample(1:k,nrow(df),replace=TRUE)
 
-val.errors = matrix(NA,k,19)
+val.errors = matrix(NA,k,20)
 
-## loop over k folds (for j in 1:k)
 for(j in 1:k){
   test1 = df[folds==j,]
   train1 = df[folds!=j,]
   
-  best.fit = regsubsets(Price~.-Shared.Room -Private.Room -Room.Type -Attraction.Index -Restraunt.Index,data=train1,nbest=1,nvmax=20) ##nbest = how many best models of size n do you want to report
+  best.fit = regsubsets(Price~.-Attraction.Index -Restraunt.Index -Shared.Room -Private.Room -Normalised.Restraunt.Index,data=train1,nbest=1,nvmax=20) ##nbest = how many best models of size n do you want to report
   
   for(i in 1:20){
-    test.mat = model.matrix(Price~.-Shared.Room -Private.Room -Room.Type -Attraction.Index -Restraunt.Index,data=test1)
+    test.mat = model.matrix(Price~.-Attraction.Index -Restraunt.Index -Shared.Room -Private.Room -Normalised.Restraunt.Index,data=test1)
     
     coef.m = coef(best.fit,id=i)
     
@@ -115,6 +123,10 @@ for(j in 1:k){
 
 cv.errors = apply(val.errors,2,mean)
 which.min(cv.errors)
+
+coef(regfit,19)
+
+## QUESTION 2
 
 library(tree)
 tree.df = tree(City~.-Shared.Room -Private.Room -Room.Type -Attraction.Index -Restraunt.Index,split=c("deviance"),data=train)
