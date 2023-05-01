@@ -156,9 +156,8 @@ library(caret)
 library(randomForest)
 library(varImp)
 
-regressor <- randomForest(City~.-Attraction.Index -Restraunt.Index -Shared.Room -Private.Room -Normalised.Restraunt.Index, data = test, importance=TRUE) 
+regressor <- randomForest(City~.-Attraction.Index -Restraunt.Index -Shared.Room -Private.Room -Normalised.Restraunt.Index, data = train, importance=TRUE) 
 
-varImp(regressor) 
-varImp(regressor, conditional=TRUE)
+varImpPlot(regressor) 
 
 
