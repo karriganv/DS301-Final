@@ -1,8 +1,6 @@
 df <- read.csv("https://raw.githubusercontent.com/karriganv/DS301-Final/main/Aemf1.csv")
 head(df)
 library(tidyverse)
-<<<<<<< HEAD
-=======
 library(ggplot2)
 
 #EXPLORATION
