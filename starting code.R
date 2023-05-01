@@ -60,13 +60,7 @@ vif(fit1)
 
 #Best Subset Selection - AIC,BIC, etc.
 
-set.seed(1)
 
-sample <- sample(c(TRUE, FALSE), nrow(df), replace=TRUE, prob=c(0.7,0.3))
-train  <- df[sample, ]
-test   <- df[!sample, ]
-dim(train)
-dim(test)
 
 library(leaps)
 regfit = regsubsets(Price~.-Attraction.Index -Restraunt.Index -Shared.Room -Private.Room -Normalised.Restraunt.Index,data=df,nbest=1,nvmax=21)
@@ -124,6 +118,12 @@ coef(regfit,19)
 
 ## QUESTION 2
 
+set.seed(1)
+
+sample <- sample(c(TRUE, FALSE), nrow(df), replace=TRUE, prob=c(0.7,0.3))
+train  <- df[sample, ]
+test   <- df[!sample, ]
+
 library(tree)
 tree.df = tree(City~.-Shared.Room -Private.Room -Room.Type -Attraction.Index -Restraunt.Index,split=c("deviance"),data=train)
 
@@ -131,3 +131,6 @@ summary(tree.df)
 
 plot(tree.df)
 text(tree.df,pretty=0)
+
+tree.pred = predict(tree.df, test, type='class')
+table(tree.pred,test$City)
