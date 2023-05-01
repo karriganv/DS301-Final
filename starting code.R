@@ -142,7 +142,7 @@ train  <- df[sample, ]
 test   <- df[!sample, ]
 
 library(tree)
-tree.df = tree(City~.-Shared.Room -Private.Room -Room.Type -Attraction.Index -Restraunt.Index,split=c("deviance"),data=train)
+tree.df = tree(City~.-Attraction.Index -Restraunt.Index -Shared.Room -Private.Room -Normalised.Restraunt.Index,split=c("deviance"),data=train)
 
 summary(tree.df)
 
