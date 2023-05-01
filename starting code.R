@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-df <- read.csv("Aemf1.csv")
-=======
 df <- read.csv("https://raw.githubusercontent.com/karriganv/DS301-Final/main/Aemf1.csv")
->>>>>>> ba1cfe50a020d895d5fe17d89543419c79b74d27
 head(df)
 library(tidyverse)
 library(ggplot2)
