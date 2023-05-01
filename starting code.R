@@ -182,10 +182,9 @@ library(caret)
 library(randomForest)
 library(varImp)
 
-regressor <- randomForest(Price~., data = df, importance=TRUE) 
+regressor <- randomForest(City~., data = df, importance=TRUE) 
 
 varImp(regressor) 
 varImp(regressor, conditional=TRUE)
 
->>>>>>> d801977af13addba8134a5c93764a24b3f03c3ca
 
