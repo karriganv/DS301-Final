@@ -1,6 +1,7 @@
 df <- read.csv("https://raw.githubusercontent.com/karriganv/DS301-Final/main/Aemf1.csv")
 head(df)
 library(tidyverse)
+library(randomForest)
 library(ggplot2)
 
 #EXPLORATION
@@ -134,3 +135,6 @@ text(tree.df,pretty=0)
 
 tree.pred = predict(tree.df, test, type='class')
 table(tree.pred,test$City)
+
+
+
