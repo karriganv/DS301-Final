@@ -42,6 +42,22 @@ ggplot(df, aes(x = City, fill = City)) + geom_histogram(stat = "count")
 
 ggplot(df, aes(x = Price, color = City)) + geom_point(stat = "count")
 
+library(scales)
+theme_set(theme_classic())
+
+
+ggplot(df, aes(x=City, y=Price)) + 
+  geom_point(col="navy", size=3) +   
+  geom_segment(aes(x=City, 
+                   xend=City, 
+                   y=min(Price), 
+                   yend=max(Price)), 
+               linetype="dashed", 
+               linewidth=0.1) +   
+  labs(title="Dot Plot", 
+       subtitle="City vs Price") +  
+  coord_flip()
+
 
 ## QUESTION 1
 
@@ -134,3 +150,38 @@ text(tree.df,pretty=0)
 
 tree.pred = predict(tree.df, test, type='class')
 table(tree.pred,test$City)
+
+
+## QUESTION 2 (Random Forest)
+
+library(tree)
+library(Metrics)
+tree.df = tree(City~.-Attraction.Index -Restraunt.Index -Shared.Room -Private.Room -Normalised.Restraunt.Index,split=c("deviance"),data=train)
+
+treesum = summary(tree.df)
+treesum
+
+
+plot(tree.df)
+text(tree.df,pretty=0)
+
+tree.pred = predict(tree.df, newdata=test)
+
+
+actual <- test$newcity
+sqrt(mean((tree.pred - actual)^2))
+rmse(tree.pred, actual)
+
+Y.test = df[-train,"City"]
+mean((tree.pred - Y.test)^2)
+
+library(caret)
+library(randomForest)
+library(varImp)
+
+regressor <- randomForest(Price~., data = df, importance=TRUE) 
+
+varImp(regressor) 
+varImp(regressor, conditional=TRUE)
+
+
